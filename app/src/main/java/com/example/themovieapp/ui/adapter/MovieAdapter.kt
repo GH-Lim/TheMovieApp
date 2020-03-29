@@ -20,18 +20,18 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     // 생성시 초기화 되는 블록
     init { // (4)
         delegateAdapters.put(AdapterType.LOADING, LoadingItemAdapter())
-        delegateAdapters.put(AdapterType.MOVIE, MovieItemAdapter(listener))
-        items = ArrayList()
+        delegateAdapters.put(AdapterType.MOVIE, MovieItemAdapter())
+        items = List<MovieItem>
         items.add(loadingItem)
     }
 
     // (5)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        delegateAdapters.get(viewType).onCreateViewHolder(parent)
+        delegateAdapters.get(viewType)!!.onCreateViewHolder(parent)
 
     // (6)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        delegateAdapters.get(getItemViewType(position)).onBindViewHolder(holder, items[position])
+        delegateAdapters.get(getItemViewType(position))!!.onBindViewHolder(holder, items[position])
     }
 
     override fun getItemCount(): Int = items.size
