@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.themovieapp.R
 import com.example.themovieapp.data.MovieItem
 import com.example.themovieapp.utils.inflate
+import com.example.themovieapp.utils.loadImg
 import kotlinx.android.synthetic.main.item_movie.view.*
 
 class MovieItemAdapter : ItemAdapter {

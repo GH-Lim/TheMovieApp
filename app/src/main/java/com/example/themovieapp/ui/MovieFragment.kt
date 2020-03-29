@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.themovieapp.R
+import com.example.themovieapp.data.MovieItem
+import com.example.themovieapp.ui.adapter.MovieAdapter
 import com.example.themovieapp.utils.inflate
 import kotlinx.android.synthetic.main.frag_recycler.*
 
@@ -32,7 +34,28 @@ class MovieFragment : Fragment() {
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout // this.layoutManager
         }
-
+        // (1) 어댑터의 연결
+        if (rv_movie_list.adapter == null) {
+            rv_movie_list.adapter = MovieAdapter()
+        }
+        // (2) 테스트용 데이터의 생성
+        if (savedInstanceState == null) {
+            val movieList = mutableListOf<MovieItem>()
+            for (i in 1..10) {
+                movieList.add(
+                    MovieItem(
+                        1234,
+                        5.0f,
+                        "Test Title $i",
+                        "2018-01-01",
+                        "https://picsum.photos/480/640?image=$i", // (3) 외부 인터넷 이미지 리소스
+                        "Test Overview"
+                    )
+                )
+            }
+            // (4) 생성된 데이터를 RecyclerView에 추가
+            (rv_movie_list.adapter as MovieAdapter).addMovieList(movieList)
+        }
 //        val movieList by lazy {
 //            movie_list.setHasFixedSize(true)
 //            movie_list.layoutManager = LinearLayoutManager(context)
