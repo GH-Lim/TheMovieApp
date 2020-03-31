@@ -1,4 +1,4 @@
-package com.acaroom.themovieapp.ui.adapter
+package com.example.themovieapp.ui.adapter
 
 import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
