@@ -1,48 +1,49 @@
-package com.example.themovieapp.ui.adapter
+package com.acaroom.themovieapp.ui.adapter
 
 import android.view.ViewGroup
 import androidx.collection.SparseArrayCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.themovieapp.data.MovieItem
+import com.example.themovieapp.ui.adapter.*
 
-class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class MovieAdapter(listener: MovieItemAdapter.ViewSelectedListener)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     // MOVIE 혹은 LOADING 아이템의 종류를 파악하기 위해
-    private var items: ArrayList<ViewType> // (1)
+    private var items: ArrayList<ViewType>
 
     // 두 종류의 어댑터를 위한 배열 컬렉션
-    private var delegateAdapters = SparseArrayCompat<ItemAdapter>() // (2)
+    private var delegateAdapters = SparseArrayCompat<ItemAdapter>()
 
-    private val loadingItem = object : ViewType { // (3)
+    private val loadingItem = object : ViewType {
         override fun getViewType() = AdapterType.LOADING
     }
 
     // 생성시 초기화 되는 블록
-    init { // (4)
+    init {
         delegateAdapters.put(AdapterType.LOADING, LoadingItemAdapter())
-        delegateAdapters.put(AdapterType.MOVIE, MovieItemAdapter())
-        items = List<MovieItem>
+        delegateAdapters.put(AdapterType.MOVIE, MovieItemAdapter(listener))
+        items = ArrayList()
         items.add(loadingItem)
     }
 
-    // (5)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         delegateAdapters.get(viewType)!!.onCreateViewHolder(parent)
 
-    // (6)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         delegateAdapters.get(getItemViewType(position))!!.onBindViewHolder(holder, items[position])
     }
 
     override fun getItemCount(): Int = items.size
 
-    // (7) 여러 종류의 보기유형을 나타내기 위해
     override fun getItemViewType(position: Int) = items[position].getViewType()
-    fun addMovieList(movieList: List<MovieItem>) {
+
+    fun addMovieList(movieList: Collection<ViewType>) {
         // 초기 위치 제거 및 알리기
         val initPosition = items.size - 1
         items.removeAt(initPosition)
-        notifyItemRemoved(initPosition) // 특정 Position에 데이터를 하나 제거할 때 이벤트 알림
+        notifyItemRemoved(initPosition)
 
         // 모든 목록을 추가하고 마지막은 로딩용 아이템 추가
         items.addAll(movieList)
@@ -50,7 +51,7 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyItemRangeChanged(initPosition, items.size + 1 /* 로딩용으로 하나 추가 */)
     }
     // 삭제하고 추가하기
-    fun clearAndAddMovieList(movieList: List<MovieItem>) {
+    fun clearAndAddMovieList(movieList: Collection<ViewType>) {
         items.clear()
         notifyItemRangeRemoved(0, getLastPosition())
 
@@ -64,5 +65,4 @@ class MovieAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         .map { it as MovieItem }
 
     private fun getLastPosition() = if (items.lastIndex == -1) 0 else items.lastIndex
-
 }
